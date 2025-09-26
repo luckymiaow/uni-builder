@@ -1,0 +1,5 @@
+<hbuilder>
+<apps debug="true" syncDebug="true">
+    <app appid="@DCLOUD_APPID@" appver="@DCLOUD_APPVER@" />
+</apps>
+</hbuilder>

@@ -1,0 +1,14 @@
+{
+  "nativePlugins": [
+    {
+      "hooksClass": "",
+      "plugins": [
+        {
+          "type": "module",
+          "name": "ch2sql-debug",
+          "class": "uni.dcloud.io.ch2sql.MyTest"
+        }
+      ]
+    }
+  ]
+}

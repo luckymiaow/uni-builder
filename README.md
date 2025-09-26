@@ -16,7 +16,7 @@ UniApp Android 项目的 Docker 构建工具，支持通过配置文件和资源
 直接使用 Docker Hub 上的预构建镜像，无需克隆项目：
 
 ```bash
-docker pull your-dockerhub-username/uni-builder:latest
+docker pull luckymiaow/uni-builder:latest 
 ```
 
 ### 方式二：本地构建镜像
@@ -59,13 +59,13 @@ my-build/
 ```bash
 cd my-build
 # 使用预构建镜像
-docker run --rm -v ${PWD}:/workspace your-dockerhub-username/uni-builder:latest
+docker run --rm -v ${PWD}:/workspace luckymiaow/uni-builder:latest 
 
 # 或使用本地构建的镜像
 docker run --rm -v ${PWD}:/workspace uni-builder
 
 # 调试模式
-docker run --rm -e DEBUG=true -v ${PWD}:/workspace your-dockerhub-username/uni-builder:latest
+docker run --rm -e DEBUG=true -v ${PWD}:/workspace luckymiaow/uni-builder:latest 
 
 调试模式会在 `output/project/` 目录导出完整的项目文件，便于检查配置是否正确应用。
 ```
@@ -74,7 +74,7 @@ docker run --rm -e DEBUG=true -v ${PWD}:/workspace your-dockerhub-username/uni-b
 
 ```bash
 # 打包现有的 Android 项目（使用预构建镜像）
-docker run --rm -v /path/to/your-android-project:/workspace your-dockerhub-username/uni-builder:latest
+docker run --rm -v /path/to/your-android-project:/workspace luckymiaow/uni-builder:latest 
 ```
 
 
@@ -288,7 +288,7 @@ override/
 4. **签名文件**：如果使用自定义签名，需将 `.jks` 文件放在 `override/simpleDemo/` 目录
 5. **权限问题**：确保挂载的文件和目录有正确的读写权限
 6. **路径格式**：Windows 用户注意使用正确的路径格式和卷挂载语法
-7. **镜像更新**：建议定期更新镜像以获取最新功能和安全修复：`docker pull your-dockerhub-username/uni-builder:latest`
+7. **镜像更新**：建议定期更新镜像以获取最新功能和安全修复：`docker pull luckymiaow/uni-builder:latest `
 8. **网络要求**：首次使用预构建镜像时需要网络连接下载，后续可离线使用
 9. **镜像标签**：生产环境建议使用具体版本标签而非 `latest` 以确保构建一致性
 
@@ -328,7 +328,7 @@ cd test
 # 本地镜像
 docker run --rm -v ${PWD}:/workspace uni-builder
 # 或预购建镜像
-docker run --rm -v ${PWD}:/workspace uni-builder
+docker run --rm -v ${PWD}:/workspace luckymiaow/uni-builder:latest 
 
 ```
 ### 9、apk 将输出到 test/output/project/ 中

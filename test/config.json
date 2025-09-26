@@ -1,6 +1,6 @@
 {
   "appName": "appName",
-  "packageName": "uni.xxxx",
+  "packageName": "com.unibuild.app",
   "compileSdkVersion": 30,
   "buildToolsVersion": "30.0.3",
   "versionCode": 20250101,
@@ -11,21 +11,21 @@
   "sourceCompatibility": "1_8",
   "targetCompatibility": "1_8",
   "signingConfig": {
-    "keyAlias": "keyAlias",
-    "keyPassword": "keyPassword",
-    "storeFile": "storeFile",
-    "storePassword": "storePassword",
+    "keyAlias": "testalias",
+    "keyPassword": "test001",
+    "storeFile": "test.keystore",
+    "storePassword": "test001",
     "v1SigningEnabled": true,
     "v2SigningEnabled": true
   },
   "dcloudControl": {
-    "appid": "__UNI__appid",
+    "appid": "__UNI__6309AD2",
     "appver": ""
   },
   "metaData": [
     {
       "name": "dcloud_appkey",
-      "value": "xxx"
+      "value": "903f19b802f544d2954a5dfeb0a6604c"
     }
   ]
 }

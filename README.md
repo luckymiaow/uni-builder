@@ -305,48 +305,30 @@ A: 增加 Docker 内存限制，建议设置为 8GB 或以上。
 **Q: Windows 路径挂载问题？**  
 A: 使用 `${PWD}` 替代相对路径，或使用绝对路径格式。
 
-**Q: 想使用特定版本？**  
-A: 替换 `latest` 标签为具体版本号，如 `your-dockerhub-username/uni-builder:v1.0.0`
 
----
 
-## 更新日志
+## HBuilder 离线打包流程
 
-### v1.0.0
-- 初始版本发布
-- 支持 UniApp Android 项目构建
-- 支持配置文件和资源覆盖
-- 支持外部项目直接打包
-
----
-
-## 贡献
-
-欢迎提交 Issues 和 Pull Requests！
-
-### 开发环境
-```bash
-git clone https://github.com/your-username/uniapp-android.git
-cd uniapp-android
+### 1、HBuilder开发工具中获取 appid --> __UNI__6309AD2
+### 2、打开HBuilder后台管理，打开相应的 应用详情
 ```
+  https://dev.dcloud.net.cn/pages/app/detail/info?appid=__UNI__6309AD2
+```
+### 3、生成 Android平台签名证书 .keystore
+```bash
+  https://ask.dcloud.net.cn/article/35777
+```
+### 4、点击HBuilder应用详情中的 各平台信息 ，新建 平台信息 将证书的相关信息录入
+### 5、将生成的证书 xxx.keystore 复制到安卓项目中，如果是使用当前 test 目录的情况下，复制到 ./test/override/simpleDemo 中
+### 6、打开HBuilder开发工具点击顶部工具栏中的 发行->原生app本地打包->生成本地打包app资源，将生成的资源目录复制到 ./test/override/simpleDemo/src/main/assets/apps 中
+### 7、根据上述操作更新 ./test/config.json ,需要注意的是其中metaData属性中dcloud_appkey的值为 第4步中创建的平台信息中，点击列表的 创建离线key ，将获取到的key复制到配置中。
+### 8、执行打包命令
+```bash
+cd test
+# 本地镜像
+docker run --rm -v ${PWD}:/workspace uni-builder
+# 或预购建镜像
+docker run --rm -v ${PWD}:/workspace uni-builder
 
-### 提交流程
-1. Fork 项目
-2. 创建功能分支
-3. 提交更改
-4. 发起 Pull Request
-
----
-
-## 支持
-
-- 📖 [项目文档](https://github.com/your-username/uniapp-android)
-- 🐛 [问题反馈](https://github.com/your-username/uniapp-android/issues)
-- 💬 [讨论区](https://github.com/your-username/uniapp-android/discussions)
-- 📧 联系邮箱：your-email@example.com
-
----
-
-## 许可证
-
-本项目采用 MIT 许可证，详见 [LICENSE](LICENSE) 文件。
+```
+### 9、apk 将输出到 test/output/project/ 中

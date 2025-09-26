@@ -8,23 +8,6 @@ UniApp Android 项目的 Docker 构建工具，支持通过配置文件和资源
 - 至少 4GB 可用磁盘空间
 - 推荐 8GB 以上内存
 
-## 安装方式
-
-### 🚀 方式一：直接使用预构建镜像（推荐）
-
-无需安装，直接使用：
-```bash
-docker pull your-dockerhub-username/uni-builder:latest
-```
-
-### 🔧 方式二：从源码构建
-
-适合需要自定义或开发的场景：
-```bash
-git clone https://github.com/your-username/uniapp-android.git
-cd uniapp-android/main
-docker build -t uni-builder .
-```
 
 ## 快速开始
 
@@ -33,14 +16,7 @@ docker build -t uni-builder .
 直接使用 Docker Hub 上的预构建镜像，无需克隆项目：
 
 ```bash
-# 基础打包（使用默认配置）
-docker run --rm -v ${PWD}:/workspace your-dockerhub-username/uni-builder:latest
-
-# 调试模式（导出项目文件到 output/project）
-docker run --rm -e DEBUG=true -v ${PWD}:/workspace your-dockerhub-username/uni-builder:latest
-
-# 使用外部项目打包
-docker run --rm -v /path/to/your/project:/workspace your-dockerhub-username/uni-builder:latest
+docker pull your-dockerhub-username/uni-builder:latest
 ```
 
 ### 方式二：本地构建镜像
@@ -57,22 +33,52 @@ cd ./main
 docker build -t uni-builder .
 
 # 3. 使用本地镜像
-docker run --rm -v ${PWD}:/workspace uni-builder
+docker run --rm -v your-project:/workspace uni-builder
 ```
 
 ---
 
-## Docker 镜像
+## 使用方式
 
-### 预构建镜像
+### 方式一：配置文件 + 资源覆盖
 
-我们提供了预构建的 Docker 镜像，发布在 Docker Hub 上，您可以直接使用而无需克隆此项目：
+本地目录结构：
+```
+my-build/
+├── config.json                      # 配置文件
+├── override/                        # 资源覆盖
+│   └── simpleDemo/
+│       ├── test.jks                 # 签名文件
+│       └── src/main/
+│           ├── res/drawable/icon.png
+│           └── assets/apps/         # UniApp 前端代码
+└── output/                          # 构建输出（自动创建）
+```
+
+运行命令：
+```bash
+cd my-build
+# 使用预构建镜像
+docker run --rm -v ${PWD}:/workspace your-dockerhub-username/uni-builder:latest
+
+# 或使用本地构建的镜像
+docker run --rm -v ${PWD}:/workspace uni-builder
+
+# 调试模式
+docker run --rm -e DEBUG=true -v ${PWD}:/workspace your-dockerhub-username/uni-builder:latest
+
+调试模式会在 `output/project/` 目录导出完整的项目文件，便于检查配置是否正确应用。
+```
+
+### 方式二：外部项目直接打包
 
 ```bash
-# 拉取最新镜像
-docker pull your-dockerhub-username/uni-builder:latest
-
+# 打包现有的 Android 项目（使用预构建镜像）
+docker run --rm -v /path/to/your-android-project:/workspace your-dockerhub-username/uni-builder:latest
 ```
+
+
+---
 
 ## 项目结构
 
@@ -103,6 +109,27 @@ uniapp-android/
     ├── config.json                    # 配置文件示例
     └── override/simpleDemo/           # 资源覆盖示例
 ```
+
+---
+
+## 构建流程
+
+1. **检测项目类型**
+   - 如果工作目录存在 `gradlew`，使用外部项目
+   - 否则使用内置默认项目
+
+2. **应用配置**（仅内置项目）
+   - 读取 `config.json` 配置文件
+   - 应用 `override/` 目录覆盖
+   - 替换占位符变量
+
+3. **执行构建**
+   - 运行 `./gradlew assembleRelease`
+   - 导出 APK 到 `output/` 目录
+
+4. **输出结果**
+   - APK 文件：`output/*.apk`
+   - 调试文件：`output/project/`（DEBUG=true 时）
 
 ---
 
@@ -240,72 +267,6 @@ override/
 | `simpleDemo/src/main/assets/apps/` | UniApp 前端资源 |
 | `simpleDemo/libs/` | 第三方 AAR 库 |
 | `simpleDemo/test.jks` | 签名证书文件 |
-
----
-
-## 使用方式
-
-### 方式一：配置文件 + 资源覆盖
-
-本地目录结构：
-```
-my-build/
-├── config.json                      # 配置文件
-├── override/                        # 资源覆盖
-│   └── simpleDemo/
-│       ├── test.jks                 # 签名文件
-│       └── src/main/
-│           ├── res/drawable/icon.png
-│           └── assets/apps/         # UniApp 前端代码
-└── output/                          # 构建输出（自动创建）
-```
-
-运行命令：
-```bash
-cd my-build
-# 使用预构建镜像
-docker run --rm -v ${PWD}:/workspace your-dockerhub-username/uni-builder:latest
-
-# 或使用本地构建的镜像
-docker run --rm -v ${PWD}:/workspace uni-builder
-```
-
-### 方式二：外部项目直接打包
-
-```bash
-# 打包现有的 Android 项目（使用预构建镜像）
-docker run --rm -v /path/to/android-project:/workspace your-dockerhub-username/uni-builder:latest
-```
-
-### 方式三：调试模式
-
-```bash
-# 启用调试模式，导出处理后的项目文件
-docker run --rm -e DEBUG=true -v ${PWD}:/workspace your-dockerhub-username/uni-builder:latest
-```
-
-调试模式会在 `output/project/` 目录导出完整的项目文件，便于检查配置是否正确应用。
-
----
-
-## 构建流程
-
-1. **检测项目类型**
-   - 如果工作目录存在 `gradlew`，使用外部项目
-   - 否则使用内置默认项目
-
-2. **应用配置**（仅内置项目）
-   - 读取 `config.json` 配置文件
-   - 应用 `override/` 目录覆盖
-   - 替换占位符变量
-
-3. **执行构建**
-   - 运行 `./gradlew assembleRelease`
-   - 导出 APK 到 `output/` 目录
-
-4. **输出结果**
-   - APK 文件：`output/*.apk`
-   - 调试文件：`output/project/`（DEBUG=true 时）
 
 ---
 
